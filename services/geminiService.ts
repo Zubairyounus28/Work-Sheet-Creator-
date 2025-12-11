@@ -102,15 +102,21 @@ export const generateExamFromHandwriting = async (base64Image: string, mimeType:
   const model = "gemini-2.5-flash";
   
   const prompt = `
-    Transcribe the COMPLETE text from this handwritten exam paper image.
-    Format it as a formal secondary school examination paper.
+    You are an expert transcriber and academic exam setter.
     
-    CRITICAL INSTRUCTIONS:
-    1. **Complete Transcription**: Do not summarize. Type out every question, sub-question, and instruction exactly as it appears.
-    2. **Corrections**: Correct obvious spelling errors, but keep the question meaning identical.
-    3. **Formatting**: Ensure strict academic formatting for the output JSON.
+    TASK:
+    Transcribe the text from this handwritten document image VERBATIM.
     
-    Return the result as structured JSON.
+    CRITICAL FORMATTING INSTRUCTIONS:
+    1. **Preserve Structure**: Keep paragraphs, line breaks, bullet points, and indentations exactly as they appear in the content. Use newline characters (\\n) to represent line breaks in the JSON string.
+    2. **Content Fidelity**: Type out every single word. Do not summarize.
+    3. **Lists**: If there are bulleted lists (using arrows ->, stars *, or hyphens -), preserve them in the text.
+    4. **Schema mapping**: 
+       - If the content is a question (e.g. "2. What is computer..."), map "2" to 'number', and the rest of the detailed answer/notes to 'text'.
+       - If the content is just notes without numbers, use "1" as the number and put everything in 'text'.
+    
+    OUTPUT:
+    Return valid JSON adhering to the provided schema. Ensure 'text' fields contain the full multi-line content with \\n characters.
   `;
 
   try {
@@ -125,7 +131,7 @@ export const generateExamFromHandwriting = async (base64Image: string, mimeType:
       config: {
         responseMimeType: "application/json",
         responseSchema: examSchema,
-        systemInstruction: "You are an expert academic exam setter.",
+        systemInstruction: "You are a professional scribe. Your goal is high-fidelity transcription, preserving all formatting and structure.",
       },
     });
 
