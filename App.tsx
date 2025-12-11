@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { generateWorksheetImage, generateExamFromHandwriting } from './services/geminiService';
+import { generateExamDocx } from './services/docxService';
 import { FileUpload } from './components/FileUpload';
 import { WorksheetRenderer } from './components/WorksheetRenderer';
 import { ExamRenderer } from './components/ExamRenderer';
 import { SearchTool } from './components/SearchTool';
 import { AppMode, ExamData } from './types';
-import { ArrowLeft, Printer, GraduationCap, Baby, Sparkles, Settings, Wand2, Image as ImageIcon, X, PenTool, Download } from 'lucide-react';
+import { ArrowLeft, Printer, GraduationCap, Baby, Sparkles, Settings, Wand2, Image as ImageIcon, X, PenTool, Download, FileText } from 'lucide-react';
 
 const App: React.FC = () => {
   const [mode, setMode] = useState<AppMode>(AppMode.HOME);
@@ -111,6 +112,24 @@ const App: React.FC = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleDownloadDocx = async () => {
+    if (!examData) return;
+    try {
+      const blob = await generateExamDocx(examData, customHeaderText);
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${examData.subject}-Exam-${Date.now()}.docx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error("Docx generation failed", e);
+      setError("Failed to generate Word document.");
+    }
   };
 
   const BrandingPanel = () => (
@@ -335,8 +354,8 @@ const App: React.FC = () => {
                     <div className="bg-gray-900 text-white p-6 rounded-xl mt-6">
                         <h3 className="font-bold mb-2">Actions</h3>
                         <div className="flex flex-col gap-3">
-                            <button onClick={handlePrint} className="flex items-center justify-center w-full py-3 bg-white text-gray-900 rounded-lg font-bold hover:bg-gray-100 transition-colors">
-                                <Printer className="w-5 h-5 mr-2" /> Print / Save PDF
+                            <button onClick={handleDownloadDocx} className="flex items-center justify-center w-full py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-colors shadow-md">
+                                <FileText className="w-5 h-5 mr-2" /> Download Word Doc (.docx)
                             </button>
                             <button onClick={reset} className="flex items-center justify-center w-full py-3 border border-gray-700 text-gray-300 rounded-lg hover:bg-gray-800 transition-colors">
                                 Digitize Another

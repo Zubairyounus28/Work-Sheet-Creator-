@@ -102,10 +102,14 @@ export const generateExamFromHandwriting = async (base64Image: string, mimeType:
   const model = "gemini-2.5-flash";
   
   const prompt = `
-    Transcribe this handwritten exam paper.
+    Transcribe the COMPLETE text from this handwritten exam paper image.
     Format it as a formal secondary school examination paper.
-    Correct any spelling errors in the handwriting.
-    Ensure strict academic formatting.
+    
+    CRITICAL INSTRUCTIONS:
+    1. **Complete Transcription**: Do not summarize. Type out every question, sub-question, and instruction exactly as it appears.
+    2. **Corrections**: Correct obvious spelling errors, but keep the question meaning identical.
+    3. **Formatting**: Ensure strict academic formatting for the output JSON.
+    
     Return the result as structured JSON.
   `;
 
