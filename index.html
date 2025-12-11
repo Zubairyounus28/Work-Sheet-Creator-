@@ -26,6 +26,15 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Merriweather:wght@300;400;700&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <style>
+      @keyframes blink-yellow-red {
+        0%, 100% { background-color: #EF4444; color: white; border-color: #EF4444; } /* Red-500 */
+        50% { background-color: #FBBF24; color: black; border-color: #F59E0B; } /* Amber-400 */
+      }
+      
+      .animate-blink-urgent {
+        animation: blink-yellow-red 1s infinite;
+      }
+
       @media print {
         @page {
           margin: 0;
@@ -86,7 +95,7 @@
 }
 </script>
 </head>
-  <body class="bg-gray-50 text-gray-900">
-    <div id="root"></div>
+  <body class="bg-gray-50 text-gray-900 flex flex-col min-h-screen">
+    <div id="root" class="flex-grow"></div>
   </body>
 </html>

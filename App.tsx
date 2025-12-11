@@ -6,7 +6,7 @@ import { WorksheetRenderer } from './components/WorksheetRenderer';
 import { ExamRenderer } from './components/ExamRenderer';
 import { SearchTool } from './components/SearchTool';
 import { AppMode, ExamData } from './types';
-import { ArrowLeft, Printer, GraduationCap, Baby, Sparkles, Settings, Wand2, Image as ImageIcon, X, PenTool, Download, FileText } from 'lucide-react';
+import { ArrowLeft, Printer, GraduationCap, Baby, Sparkles, Settings, Wand2, Image as ImageIcon, X, PenTool, Download, FileText, Heart, Wallet, CreditCard, Copy, Phone } from 'lucide-react';
 
 interface BrandingPanelProps {
     customHeaderText: string;
@@ -58,6 +58,88 @@ const BrandingPanel: React.FC<BrandingPanelProps> = ({
     </div>
 );
 
+const DonationModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
+    if (!isOpen) return null;
+
+    const copyToClipboard = (text: string) => {
+        navigator.clipboard.writeText(text);
+        alert("Copied to clipboard!");
+    };
+
+    return (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden relative animate-in fade-in zoom-in duration-200">
+                {/* Header */}
+                <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white text-center relative">
+                     <button onClick={onClose} className="absolute top-4 right-4 text-white/80 hover:text-white hover:bg-white/20 rounded-full p-1 transition-all">
+                        <X className="w-6 h-6" />
+                    </button>
+                    <Heart className="w-12 h-12 mx-auto mb-3 text-pink-300 fill-pink-300 animate-pulse" />
+                    <h2 className="text-2xl font-bold">Support the Developer</h2>
+                    <p className="text-indigo-100 mt-2 text-sm">Donate your happy amount so the developer can put more effort into your business tools.</p>
+                </div>
+
+                {/* Body */}
+                <div className="p-6 space-y-6">
+                    {/* JazzCash */}
+                    <div className="bg-red-50 p-4 rounded-xl border border-red-100 relative group hover:shadow-md transition-shadow">
+                        <div className="flex items-start gap-4">
+                            <div className="bg-red-500 text-white p-2 rounded-lg">
+                                <Wallet className="w-6 h-6" />
+                            </div>
+                            <div className="flex-grow">
+                                <h3 className="font-bold text-gray-800 text-lg">JazzCash</h3>
+                                <p className="font-mono text-xl text-red-600 font-bold my-1 tracking-wide">+92 334 3018989</p>
+                                <p className="text-sm text-gray-500 font-medium uppercase">Title: Zubair Younus</p>
+                            </div>
+                            <button onClick={() => copyToClipboard("03343018989")} className="text-gray-400 hover:text-red-600" title="Copy Number">
+                                <Copy className="w-5 h-5" />
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Meezan Bank */}
+                    <div className="bg-indigo-50 p-4 rounded-xl border border-indigo-100 relative group hover:shadow-md transition-shadow">
+                        <div className="flex items-start gap-4">
+                            <div className="bg-indigo-600 text-white p-2 rounded-lg">
+                                <CreditCard className="w-6 h-6" />
+                            </div>
+                            <div className="flex-grow">
+                                <h3 className="font-bold text-gray-800 text-lg">Meezan Bank</h3>
+                                <p className="text-xs text-gray-500 mb-1">BARADARI NORTH KARACHI</p>
+                                
+                                <div className="mt-2">
+                                    <p className="text-xs text-gray-500 uppercase font-bold">Account Number</p>
+                                    <div className="flex items-center gap-2">
+                                        <p className="font-mono text-lg text-indigo-700 font-bold">99390103254707</p>
+                                        <button onClick={() => copyToClipboard("99390103254707")} className="text-indigo-300 hover:text-indigo-600"><Copy className="w-4 h-4" /></button>
+                                    </div>
+                                </div>
+                                
+                                <div className="mt-2">
+                                    <p className="text-xs text-gray-500 uppercase font-bold">IBAN</p>
+                                    <div className="flex items-center gap-2">
+                                        <p className="font-mono text-sm text-gray-700 break-all">PK81MEZN009939010325470</p>
+                                        <button onClick={() => copyToClipboard("PK81MEZN009939010325470")} className="text-gray-400 hover:text-indigo-600"><Copy className="w-4 h-4" /></button>
+                                    </div>
+                                </div>
+                                <p className="text-sm text-gray-500 font-medium uppercase mt-2">Title: Zubair Younus</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Footer of Modal */}
+                <div className="bg-gray-50 p-4 text-center border-t border-gray-100">
+                    <button onClick={onClose} className="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-lg transition-colors">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const App: React.FC = () => {
   const [mode, setMode] = useState<AppMode>(AppMode.HOME);
   
@@ -69,6 +151,7 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sourceImage, setSourceImage] = useState<string | null>(null);
+  const [isDonateOpen, setIsDonateOpen] = useState(false);
   
   // Visual Studio States
   const [visualPrompt, setVisualPrompt] = useState("");
@@ -183,10 +266,10 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen font-sans bg-gray-50 pb-20">
+    <div className="flex flex-col min-h-screen font-sans bg-gray-50">
       
       {/* Navigation */}
-      <nav className="bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-50 no-print">
+      <nav className="bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-50 no-print shadow-sm">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-2 cursor-pointer" onClick={goHome}>
             <div className="bg-primary text-white p-2 rounded-lg">
@@ -194,15 +277,28 @@ const App: React.FC = () => {
             </div>
             <span className="font-bold text-xl tracking-tight text-gray-900">EduGenius</span>
           </div>
-          {mode !== AppMode.HOME && (
-             <button onClick={goHome} className="text-sm text-gray-500 hover:text-gray-900 flex items-center">
-                 <ArrowLeft className="w-4 h-4 mr-1" /> Back to Home
+          
+          <div className="flex items-center gap-4">
+             {/* DONATE BUTTON */}
+             <button 
+                onClick={() => setIsDonateOpen(true)}
+                className="animate-blink-urgent px-4 py-2 rounded-full font-bold text-sm shadow-md flex items-center gap-2 transform hover:scale-105 transition-transform"
+             >
+                <Heart className="w-4 h-4 fill-current" />
+                Donate Now
              </button>
-          )}
+
+             {mode !== AppMode.HOME && (
+                <button onClick={goHome} className="text-sm text-gray-500 hover:text-gray-900 flex items-center font-medium bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg transition-colors">
+                    <ArrowLeft className="w-4 h-4 mr-1" /> Back
+                </button>
+             )}
+          </div>
         </div>
       </nav>
 
-      <main className="max-w-7xl mx-auto px-4 py-8">
+      {/* Main Content - Flex Grow to push footer down */}
+      <main className="flex-grow max-w-7xl mx-auto px-4 py-8 w-full">
         
         {/* Error Display */}
         {error && (
@@ -213,7 +309,7 @@ const App: React.FC = () => {
 
         {/* HOME SCREEN */}
         {mode === AppMode.HOME && (
-          <div className="flex flex-col md:flex-row gap-8 items-stretch justify-center h-[70vh]">
+          <div className="flex flex-col md:flex-row gap-8 items-stretch justify-center h-[60vh] mt-10">
             <div 
                 onClick={() => setMode(AppMode.MONTESSORI)}
                 className="flex-1 bg-white rounded-2xl shadow-sm border border-gray-200 p-8 flex flex-col items-center justify-center cursor-pointer hover:shadow-xl hover:border-montessori transition-all group"
@@ -409,6 +505,21 @@ const App: React.FC = () => {
         )}
 
       </main>
+
+      {/* Developer Footer */}
+      <footer className="bg-gray-900 text-gray-400 py-6 mt-auto border-t border-gray-800 no-print">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+            <p className="flex items-center justify-center gap-2 text-sm md:text-base">
+                <Phone className="w-4 h-4 text-primary" />
+                <span className="font-medium">Contact for Website or App Development:</span>
+                <span className="text-white font-bold">+92 321 2696712</span>
+                <span className="hidden md:inline mx-2">|</span>
+                <span className="text-white">Zubair Younus</span>
+            </p>
+        </div>
+      </footer>
+
+      <DonationModal isOpen={isDonateOpen} onClose={() => setIsDonateOpen(false)} />
     </div>
   );
 };
