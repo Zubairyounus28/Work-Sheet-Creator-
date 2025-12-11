@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EduGenius</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#4F46E5', // Indigo 600
+              secondary: '#EC4899', // Pink 500
+              montessori: '#FCD34D', // Amber 300
+              secondarySchool: '#3B82F6', // Blue 500
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              serif: ['Merriweather', 'serif'],
+              hand: ['Comic Neue', 'cursive'],
+            }
+          }
+        }
+      }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Merriweather:wght@300;400;700&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      @media print {
+        @page {
+          margin: 0;
+          size: auto;
+        }
+
+        body {
+          background: white !important;
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+
+        /* Hide all UI elements */
+        .no-print, nav, button, input {
+          display: none !important;
+        }
+
+        /* Reset layout containers to allow full width/height flow */
+        #root, main, .print-container {
+          width: 100% !important;
+          height: auto !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          display: block !important;
+          overflow: visible !important;
+        }
+
+        /* Target the specific print area */
+        #print-area {
+          width: 100% !important;
+          max-width: 100% !important;
+          min-height: 100vh !important;
+          margin: 0 !important;
+          padding: 20mm !important; /* Standard A4 padding */
+          box-shadow: none !important;
+          border: none !important;
+          position: relative !important;
+          left: 0 !important;
+          top: 0 !important;
+        }
+
+        /* Ensure page breaks work inside the worksheet */
+        .break-inside-avoid {
+          page-break-inside: avoid;
+        }
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.1/",
+    "react": "https://esm.sh/react@^19.2.1",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.1/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.32.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.559.0"
+  }
+}
+</script>
+</head>
+  <body class="bg-gray-50 text-gray-900">
+    <div id="root"></div>
+  </body>
+</html>

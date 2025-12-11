@@ -1,0 +1,7 @@
+{
+  "name": "EduGenius - School Worksheet & Exam Paper Creator",
+  "description": "An AI-powered application for Montessori and Secondary schools to generate digital worksheets and exam papers from uploads or search.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
