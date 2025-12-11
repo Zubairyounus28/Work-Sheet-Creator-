@@ -8,6 +8,56 @@ import { SearchTool } from './components/SearchTool';
 import { AppMode, ExamData } from './types';
 import { ArrowLeft, Printer, GraduationCap, Baby, Sparkles, Settings, Wand2, Image as ImageIcon, X, PenTool, Download, FileText } from 'lucide-react';
 
+interface BrandingPanelProps {
+    customHeaderText: string;
+    setCustomHeaderText: (val: string) => void;
+    customLogo: string | null;
+    setCustomLogo: (val: string | null) => void;
+    handleLogoChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+const BrandingPanel: React.FC<BrandingPanelProps> = ({
+    customHeaderText,
+    setCustomHeaderText,
+    customLogo,
+    setCustomLogo,
+    handleLogoChange
+}) => (
+    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mt-6 no-print">
+        <h3 className="font-bold text-gray-800 mb-4 flex items-center text-lg">
+        <Settings className="w-5 h-5 mr-2 text-gray-600" />
+        School Branding
+        </h3>
+        <div className="space-y-5">
+            <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">School Name / Header</label>
+                <input 
+                    type="text" 
+                    value={customHeaderText} 
+                    onChange={(e) => setCustomHeaderText(e.target.value)}
+                    className="w-full p-4 border border-gray-300 rounded-lg text-base text-gray-800 shadow-sm focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition-all placeholder-gray-400" 
+                    placeholder="Type School Name Here..."
+                />
+            </div>
+            <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Upload Logo</label>
+                <input 
+                    type="file" 
+                    accept="image/*"
+                    onChange={handleLogoChange}
+                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                />
+            </div>
+            {customLogo && (
+                <div className="flex items-center gap-2 p-2 bg-green-50 rounded-lg border border-green-100">
+                    <span className="text-sm text-green-700 font-medium flex items-center">✓ Logo ready</span>
+                    <button onClick={() => setCustomLogo(null)} className="text-sm text-red-500 hover:text-red-700 font-medium underline ml-auto">Remove</button>
+                </div>
+            )}
+        </div>
+    </div>
+);
+
 const App: React.FC = () => {
   const [mode, setMode] = useState<AppMode>(AppMode.HOME);
   
@@ -131,42 +181,6 @@ const App: React.FC = () => {
       setError("Failed to generate Word document.");
     }
   };
-
-  const BrandingPanel = () => (
-    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mt-6 no-print">
-        <h3 className="font-bold text-gray-800 mb-4 flex items-center text-lg">
-        <Settings className="w-5 h-5 mr-2 text-gray-600" />
-        School Branding
-        </h3>
-        <div className="space-y-5">
-            <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">School Name / Header</label>
-                <input 
-                    type="text" 
-                    value={customHeaderText} 
-                    onChange={(e) => setCustomHeaderText(e.target.value)}
-                    className="w-full p-4 border border-gray-300 rounded-lg text-base text-gray-800 shadow-sm focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition-all placeholder-gray-400" 
-                    placeholder="Type School Name Here..."
-                />
-            </div>
-            <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">Upload Logo</label>
-                <input 
-                    type="file" 
-                    accept="image/*"
-                    onChange={handleLogoChange}
-                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
-                />
-            </div>
-            {customLogo && (
-                <div className="flex items-center gap-2 p-2 bg-green-50 rounded-lg border border-green-100">
-                    <span className="text-sm text-green-700 font-medium flex items-center">✓ Logo ready</span>
-                    <button onClick={() => setCustomLogo(null)} className="text-sm text-red-500 hover:text-red-700 font-medium underline ml-auto">Remove</button>
-                </div>
-            )}
-        </div>
-    </div>
-  );
 
   return (
     <div className="min-h-screen font-sans bg-gray-50 pb-20">
@@ -299,7 +313,13 @@ const App: React.FC = () => {
                 {/* Search Tool (Only show if no result yet) */}
                 {!worksheetImageUrl && <SearchTool onImageFound={() => {}} />}
 
-                <BrandingPanel />
+                <BrandingPanel 
+                    customHeaderText={customHeaderText}
+                    setCustomHeaderText={setCustomHeaderText}
+                    customLogo={customLogo}
+                    setCustomLogo={setCustomLogo}
+                    handleLogoChange={handleLogoChange}
+                />
                 
                 {worksheetImageUrl && (
                     <div className="bg-indigo-900 text-white p-6 rounded-xl mt-6">
@@ -348,7 +368,13 @@ const App: React.FC = () => {
                     <FileUpload onFileSelect={handleExamUpload} isLoading={loading} label="Upload Handwritten Exam" />
                 </div>
 
-                <BrandingPanel />
+                <BrandingPanel 
+                    customHeaderText={customHeaderText}
+                    setCustomHeaderText={setCustomHeaderText}
+                    customLogo={customLogo}
+                    setCustomLogo={setCustomLogo}
+                    handleLogoChange={handleLogoChange}
+                />
 
                 {examData && (
                     <div className="bg-gray-900 text-white p-6 rounded-xl mt-6">
