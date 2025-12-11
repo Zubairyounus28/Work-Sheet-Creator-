@@ -1,7 +1,14 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { WorksheetData, ExamData, SectionType } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+let ai: GoogleGenAI | null = null;
+
+const getAI = () => {
+  if (!ai) {
+    ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  }
+  return ai;
+};
 
 // Schema for Secondary Exam
 const examSchema = {
@@ -46,6 +53,7 @@ const cleanJson = (text: string): string => {
 export const generateWorksheetImage = async (base64Image: string | undefined, mimeType: string | undefined, userPrompt: string): Promise<string> => {
   // Use gemini-2.5-flash-image for full sheet generation
   const model = "gemini-2.5-flash-image";
+  const client = getAI();
   
   let parts: any[] = [];
   
@@ -78,7 +86,7 @@ export const generateWorksheetImage = async (base64Image: string | undefined, mi
   parts.push({ text: textPrompt });
 
   try {
-    const response = await ai.models.generateContent({
+    const response = await client.models.generateContent({
       model,
       contents: { parts },
     });
@@ -100,6 +108,7 @@ export const generateWorksheetImage = async (base64Image: string | undefined, mi
 
 export const generateExamFromHandwriting = async (base64Image: string, mimeType: string): Promise<ExamData> => {
   const model = "gemini-2.5-flash";
+  const client = getAI();
   
   const prompt = `
     You are an expert transcriber and academic exam setter.
@@ -120,7 +129,7 @@ export const generateExamFromHandwriting = async (base64Image: string, mimeType:
   `;
 
   try {
-    const response = await ai.models.generateContent({
+    const response = await client.models.generateContent({
       model,
       contents: {
         parts: [
@@ -147,9 +156,10 @@ export const generateExamFromHandwriting = async (base64Image: string, mimeType:
 
 export const searchForWorksheets = async (query: string): Promise<{ title: string, uri: string }[]> => {
   const model = "gemini-2.5-flash";
+  const client = getAI();
   
   try {
-    const response = await ai.models.generateContent({
+    const response = await client.models.generateContent({
       model,
       contents: `Find 5 high-quality, printable worksheet resources or ideas for: ${query}. Return a list of specific URLs to images or PDF pages if possible.`,
       config: {
