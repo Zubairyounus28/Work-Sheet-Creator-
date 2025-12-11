@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { generateWorksheetImage, generateExamFromHandwriting } from './services/geminiService';
 import { generateExamDocx } from './services/docxService';
 import { FileUpload } from './components/FileUpload';
@@ -152,6 +152,7 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [sourceImage, setSourceImage] = useState<string | null>(null);
   const [isDonateOpen, setIsDonateOpen] = useState(false);
+  const [liveUsers, setLiveUsers] = useState(0);
   
   // Visual Studio States
   const [visualPrompt, setVisualPrompt] = useState("");
@@ -160,6 +161,22 @@ const App: React.FC = () => {
   // Branding State
   const [customLogo, setCustomLogo] = useState<string | null>(null);
   const [customHeaderText, setCustomHeaderText] = useState<string>("");
+
+  // Simulated Live User Count
+  useEffect(() => {
+    // Initial random count between 240 and 500
+    setLiveUsers(Math.floor(Math.random() * (500 - 240 + 1)) + 240);
+
+    const interval = setInterval(() => {
+      setLiveUsers(prev => {
+        // Randomly add or subtract 1-3 users
+        const change = Math.floor(Math.random() * 7) - 3;
+        return Math.max(200, prev + change); // Keep minimum 200
+      });
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleWorksheetUpload = async (base64: string, mimeType: string) => {
     // In Visual mode, we store the file as pending for the generation request
@@ -279,6 +296,15 @@ const App: React.FC = () => {
           </div>
           
           <div className="flex items-center gap-4">
+             {/* Live Users Indicator */}
+             <div className="hidden sm:flex items-center gap-2 text-green-700 bg-green-50 px-3 py-1.5 rounded-full text-xs font-bold border border-green-200 shadow-sm mr-2 animate-in fade-in">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+                <span>{liveUsers} Live Users</span>
+             </div>
+
              {/* DONATE BUTTON */}
              <button 
                 onClick={() => setIsDonateOpen(true)}
